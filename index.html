@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenişKapı Drive - Akıllı Depolama Çözümü</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4285F4;
+            --primary-light: #8AB4F8;
+            --primary-dark: #3367D6;
+            --secondary: #34A853;
+            --danger: #EA4335;
+            --warning: #FBBC05;
+            --dark: #202124;
+            --light: #f8f9fa;
+            --card-bg: #292A2D;
+            --border: #3C4043;
+            --text-primary: #E8EAED;
+            --text-secondary: #9AA0A6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 500;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Auth Section */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Storage Info */
+        .storage-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .storage-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .upgrade-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(66, 133, 244, 0.3);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .storage-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Upload Area */
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .upload-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .upload-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .upload-card.request {
+            background: linear-gradient(135deg, #4285F4, #34A853);
+            color: white;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            background-color: rgba(66, 133, 244, 0.05);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(66, 133, 244, 0.1);
+        }
+
+        .upload-area i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .upload-area.request i {
+            color: white;
+        }
+
+        /* Files Section */
+        .files-container {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Files List */
+        .files-list {
+            list-style: none;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background-color: rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+
+        .file-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .file-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            border-radius: 12px;
+            background-color: rgba(66, 133, 244, 0.1);
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-details {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+        }
+
+        .action-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+
+        .action-btn.download:hover {
+            color: var(--secondary);
+        }
+
+        .action-btn.delete:hover {
+            color: var(--danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--card-bg);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 1001;
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left-color: var(--secondary);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .file-item {
+                flex-wrap: wrap;
+            }
+            
+            .file-actions {
+                margin-left: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-cloud" style="font-size: 32px; color: var(--primary);"></i>
+                <span class="logo-text">GenişKapı Drive</span>
+            </div>
+            <div class="auth-section">
+                <button id="loginBtn" class="btn">Giriş Yap</button>
+                <div id="userInfo" style="display: none;">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="storage-card">
+            <div class="storage-header">
+                <h3>Depolama Kullanımı</h3>
+                <button id="upgradeBtn" class="upgrade-btn">+ Depolama Al</button>
+            </div>
+            <div class="progress-container">
+                <div id="storageProgress" class="progress-bar"></div>
+            </div>
+            <div class="storage-details">
+                <span id="storageUsed">0 GB kullanıldı</span>
+                <span id="storageTotal">1 GB</span>
+            </div>
+        </div>
+        
+        <div class="upload-section">
+            <div class="upload-card">
+                <div id="uploadArea" class="upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Dosyalarınızı sürükleyip bırakın</h3>
+                    <p>veya</p>
+                    <button class="btn">Dosya Seç</button>
+                    <input type="file" id="fileInput" multiple style="display: none;">
+                </div>
+                <div id="uploadProgressContainer" style="display: none; margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Yükleniyor...</span>
+                        <span id="uploadPercent">0%</span>
+                    </div>
+                    <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px;">
+                        <div id="uploadProgress" style="height: 100%; width: 0%; background: var(--secondary); border-radius: 3px;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="upload-card request">
+                <div class="upload-area request">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Ekstra Depolama İste</h3>
+                    <p>Bize ulaşın, ihtiyacınıza göre çözüm sunalım</p>
+                    <button id="requestStorageBtn" class="btn" style="background: white; color: var(--primary);">Talep Gönder</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="files-container">
+            <div class="section-header">
+                <h3>Dosyalarım</h3>
+                <div class="file-actions">
+                    <button id="refreshBtn" class="btn">
+                        <i class="fas fa-sync-alt"></i> Yenile
+                    </button>
+                </div>
+            </div>
+            
+            <ul id="filesList" class="files-list">
+                <!-- Dosyalar buraya eklenecek -->
+            </ul>
+            
+            <div id="emptyState" class="empty-state">
+                <i class="far fa-folder-open"></i>
+                <h3>Henüz dosya yüklenmedi</h3>
+                <p>Dosyalarınızı yüklemek için yukarıdaki alanı kullanın</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Giriş Modalı -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Google ile Giriş Yap</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 80px; height: 80px; background: #f1f1f1; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fab fa-google" style="font-size: 36px; color: var(--primary);"></i>
+                </div>
+                <p>Google hesabınızla giriş yaparak tüm cihazlarınızdan dosyalarınıza erişebilirsiniz</p>
+            </div>
+            <button id="googleLoginBtn" class="btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i class="fab fa-google"></i> Google ile Giriş Yap
+            </button>
+        </div>
+    </div>
+    
+    <!-- Depolama Talep Modalı -->
+    <div id="requestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ekstra Depolama Talebi</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="requestForm">
+                <div class="form-group">
+                    <label for="requestEmail">E-posta Adresiniz</label>
+                    <input type="email" id="requestEmail" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="requestGB">İstediğiniz Ekstra Depolama (GB)</label>
+                    <input type="number" id="requestGB" class="form-control" min="1" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="requestReason">Kullanım Amacı</label>
+                    <textarea id="requestReason" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Talep Gönder</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Toast Bildirimi -->
+    <div id="toast" class="toast"></div>
+    
+    <script>
+        // Uygulama sabitleri
+        const MAX_STORAGE = 1 * 1024 * 1024 * 1024; // 1GB bayt cinsinden
+        const STORAGE_KEY = 'geniskapi_drive_files_v3';
+        const USER_KEY = 'geniskapi_user';
+        const REQUEST_EMAIL = 'geniskapisirketi@gmail.com';
+        
+        // DOM elementleri
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const uploadPercent = document.getElementById('uploadPercent');
+        const uploadProgressContainer = document.getElementById('uploadProgressContainer');
+        const filesList = document.getElementById('filesList');
+        const emptyState = document.getElementById('emptyState');
+        const storageProgress = document.getElementById('storageProgress');
+        const storageUsed = document.getElementById('storageUsed');
+        const storageTotal = document.getElementById('storageTotal');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const loginBtn = document.getElementById('loginBtn');
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const userInfo = document.getElementById('userInfo');
+        const userAvatar = document.getElementById('userAvatar');
+        const requestStorageBtn = document.getElementById('requestStorageBtn');
+        const toast = document.getElementById('toast');
+        const loginModal = document.getElementById('loginModal');
+        const requestModal = document.getElementById('requestModal');
+        const requestForm = document.getElementById('requestForm');
+        
+        // Modal kapatma butonları
+        document.querySelectorAll('.modal-close').forEach(btn => {
+            btn.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+                requestModal.style.display = 'none';
+            });
+        });
+        
+        // Uygulama durumu
+        let files = [];
+        let currentUser = null;
+        
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUser();
+            loadFiles();
+            updateStorageDisplay();
+            setupEventListeners();
+        });
+        
+        function loadUser() {
+            const userData = localStorage.getItem(USER_KEY);
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                loginBtn.style.display = 'none';
+                userInfo.style.display = 'flex';
+                userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+                userAvatar.style.backgroundColor = getRandomColor();
+            }
+        }
+        
+        function getRandomColor() {
+            const colors = ['#4285F4', '#34A853', '#EA4335', '#FBBC05', '#673AB7'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        function loadFiles() {
+            const storedFiles = localStorage.getItem(STORAGE_KEY);
+            if (storedFiles) {
+                files = JSON.parse(storedFiles);
+            }
+            
+            if (files.length === 0) {
+                emptyState.style.display = 'block';
+                filesList.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                filesList.style.display = 'block';
+                renderFiles();
+            }
+        }
+        
+        function renderFiles() {
+            filesList.innerHTML = '';
+            
+            files.forEach(file => {
+                const fileSize = formatFileSize(file.size);
+                const fileType = file.type.split('/')[0];
+                const fileIcon = getFileIcon(file.type);
+                
+                const fileItem = document.createElement('li');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-icon">
+                        <i class="${fileIcon}"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-details">
+                            <span><i class="fas fa-hdd"></i> ${fileSize}</span>
+                            <span><i class="far fa-calendar-alt"></i> ${new Date(file.uploadDate).toLocaleDateString()}</span>
+                        </div>
+                        ${fileType === 'video' ? `<video src="${file.data}" controls style="width:100%; max-height:200px; margin-top:10px;"></video>` : ''}
+                        ${fileType === 'image' ? `<img src="${file.data}" style="width:100%; max-height:200px; margin-top:10px;">` : ''}
+                    </div>
+                    <div class="file-actions">
+                        <button class="action-btn download" data-id="${file.id}">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="action-btn delete" data-id="${file.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                filesList.appendChild(fileItem);
+            });
+            
+            // Dinamik olarak eklenen butonlara event listener ekle
+            document.querySelectorAll('.download').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const fileId = e.currentTarget.getAttribute('data-id');
+                    downloadFile(fileId);
+                });
+            });
+            
+            document.querySelectorAll('.delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const fileId = e.currentTarget.getAttribute('data-id');
+                    deleteFile(fileId);
+                });
+            });
+        }
+        
+        function setupEventListeners() {
+            // Dosya yükleme
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileUpload);
+            
+            // Yenile butonu
+            refreshBtn.addEventListener('click', () => {
+                loadFiles();
+                showToast('Dosya listesi yenilendi', 'success');
+            });
+            
+            // Giriş butonları
+            loginBtn.addEventListener('click', () => {
+                loginModal.style.display = 'flex';
+            });
+            
+            googleLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Burada gerçekte Google Auth API kullanılmalı
+                // Demo amaçlı fake bir kullanıcı oluşturuyoruz
+                currentUser = {
+                    id: 'google_' + Math.random().toString(36).substring(2),
+                    name: 'Demo Kullanıcı',
+                    email: 'demo@geniskapi.com',
+                    photo: null
+                };
+                
+                localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+                loginModal.style.display = 'none';
+                loadUser();
+                showToast('Başarıyla giriş yapıldı', 'success');
+            });
+            
+            // Depolama talep butonu
+            requestStorageBtn.addEventListener('click', () => {
+                if (!currentUser) {
+                    showToast('Lütfen önce giriş yapın', 'error');
+                    loginModal.style.display = 'flex';
+                    return;
+                }
+                requestModal.style.display = 'flex';
+                document.getElementById('requestEmail').value = currentUser.email;
+            });
+            
+            // Talep formu
+            requestForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('requestEmail').value;
+                const gb = document.getElementById('requestGB').value;
+                const reason = document.getElementById('requestReason').value;
+                
+                // Burada gerçekte bir API çağrısı yapılmalı
+                // Demo amaçlı mailto linki kullanıyoruz
+                const subject = `${gb}GB Depolama Talebi`;
+                const body = `Merhaba,\n\n${gb}GB ekstra depolama alanı talep ediyorum.\n\nKullanım Amacı: ${reason}\n\nSaygılarımla,\n${currentUser.name}`;
+                
+                window.open(`mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+                
+                requestModal.style.display = 'none';
+                showToast('Talebiniz başarıyla gönderildi', 'success');
+            });
+            
+            // Sürükle bırak desteği
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = 'var(--primary)';
+                uploadArea.style.backgroundColor = 'rgba(66, 133, 244, 0.1)';
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.borderColor = 'var(--border)';
+                uploadArea.style.backgroundColor = 'rgba(66, 133, 244, 0.05)';
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = 'var(--border)';
+                uploadArea.style.backgroundColor = 'rgba(66, 133, 244, 0.05)';
+                
+                if (e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileUpload({ target: fileInput });
+                }
+            });
+        }
+        
+        function handleFileUpload(event) {
+            const selectedFiles = event.target.files;
+            if (!selectedFiles || selectedFiles.length === 0) return;
+            
+            // Depolama kontrolü
+            const usedStorage = calculateUsedStorage();
+            if (usedStorage >= MAX_STORAGE) {
+                showToast('Depolama alanınız dolu!', 'error');
+                return;
+            }
+            
+            uploadProgressContainer.style.display = 'block';
+            
+            Array.from(selectedFiles).forEach((file, index) => {
+                const reader = new FileReader();
+                
+                reader.onloadstart = () => {
+                    uploadProgress.style.width = '0%';
+                    uploadPercent.textContent = '0%';
+                };
+                
+                reader.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        uploadProgress.style.width = `${percent}%`;
+                        uploadPercent.textContent = `${percent}%`;
+                    }
+                };
+                
+                reader.onload = (e) => {
+                    const fileData = {
+                        id: Date.now() + index,
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        uploadDate: Date.now(),
+                        data: e.target.result,
+                        owner: currentUser ? currentUser.id : null
+                    };
+                    
+                    files.push(fileData);
+                    saveFiles();
+                    loadFiles();
+                    updateStorageDisplay();
+                    
+                    showToast(`${file.name} başarıyla yüklendi`, 'success');
+                    
+                    // Son dosya yüklendikten sonra progress bar'ı gizle
+                    if (index === selectedFiles.length - 1) {
+                        setTimeout(() => {
+                            uploadProgressContainer.style.display = 'none';
+                        }, 1000);
+                    }
+                };
+                
+                reader.onerror = () => {
+                    showToast(`${file.name} yüklenirken hata oluştu`, 'error');
+                    uploadProgressContainer.style.display = 'none';
+                };
+                
+                reader.readAsDataURL(file);
+            });
+            
+            // Input'u temizle
+            fileInput.value = '';
+        }
+        
+        function calculateUsedStorage() {
+            return files.reduce((total, file) => total + file.size, 0);
+        }
+        
+        function updateStorageDisplay() {
+            const usedStorage = calculateUsedStorage();
+            const percent = Math.round((usedStorage / MAX_STORAGE) * 100);
+            
+            storageProgress.style.width = `${percent}%`;
+            storageUsed.textContent = `${formatFileSize(usedStorage)} kullanıldı`;
+            storageTotal.textContent = `1 GB`;
+            
+            if (percent > 90) {
+                storageProgress.style.background = 'var(--danger)';
+            } else if (percent > 70) {
+                storageProgress.style.background = 'var(--warning)';
+            } else {
+                storageProgress.style.background = 'linear-gradient(to right, var(--primary), var(--secondary))';
+            }
+        }
+        
+        function saveFiles() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(files));
+        }
+        
+        function downloadFile(fileId) {
+            const file = files.find(f => f.id.toString() === fileId.toString());
+            if (!file) return;
+            
+            const a = document.createElement('a');
+            a.href = file.data;
+            a.download = file.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showToast(`${file.name} indiriliyor...`, 'success');
+        }
+        
+        function deleteFile(fileId) {
+            if (!confirm('Bu dosyayı silmek istediğinize emin misiniz?')) return;
+            
+            const index = files.findIndex(f => f.id.toString() === fileId.toString());
+            if (index !== -1) {
+                files.splice(index, 1);
+                saveFiles();
+                loadFiles();
+                updateStorageDisplay();
+                showToast('Dosya silindi', 'success');
+            }
+        }
+        
+        function getFileIcon(fileType) {
+            const type = fileType.split('/')[0];
+            const extension = fileType.split('/')[1];
+            
+            switch (type) {
+                case 'image':
+                    return 'far fa-image';
+                case 'video':
+                    return 'fas fa-video';
+                case 'audio':
+                    return 'fas fa-music';
+                case 'application':
+                    if (extension.includes('pdf')) return 'far fa-file-pdf';
+                    if (extension.includes('zip') || extension.includes('rar') || extension.includes('7z')) return 'far fa-file-archive';
+                    if (extension.includes('msword') || extension.includes('wordprocessingml')) return 'far fa-file-word';
+                    if (extension.includes('spreadsheetml') || extension.includes('excel')) return 'far fa-file-excel';
+                    if (extension.includes('presentationml') || extension.includes('powerpoint')) return 'far fa-file-powerpoint';
+                    if (extension.includes('vnd.android.package-archive')) return 'fab fa-android';
+                    return 'far fa-file';
+                case 'text':
+                    return 'far fa-file-alt';
+                default:
+                    return 'far fa-file';
+            }
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function showToast(message, type = '') {
+            toast.textContent = message;
+            toast.className = 'toast';
+            
+            if (type === 'success') {
+                toast.classList.add('success');
+            } else if (type === 'error') {
+                toast.classList.add('error');
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Pencere dışına tıklandığında modal'ı kapat
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+            if (e.target === requestModal) {
+                requestModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
