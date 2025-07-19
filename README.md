@@ -30,3 +30,7 @@
 3. (Gelişmiş özellikler yakında!)
 
 ---
+## 📸 Ekran Görüntüsü
+
+### GenişKapı Drive Ana Sayfa ![Screenshot_20250719_104451_Edge](https://github.com/user-attachments/assets/634e352a-b4ba-435a-8bd1-560532965fd3)
+> 🎯 Bu proje hâlâ geliştirilmeye devam ediyor. Önerilerinizi ve katkılarınızı bekliyorum!
